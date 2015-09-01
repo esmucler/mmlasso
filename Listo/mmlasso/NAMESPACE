@@ -1,0 +1,13 @@
+useDynLib(mmlasso, .registration=TRUE)
+##exportPattern("^[[:alpha:]]+")
+importFrom("Rcpp", "evalCpp")
+importFrom("stats", "coef", "dnorm", "integrate", "mad", "median", "uniroot")
+importFrom("parallel", "stopCluster", "makeCluster", "detectCores")
+importFrom("doParallel","registerDoParallel")
+importFrom("foreach","foreach","%dopar%")
+importFrom("MASS","mvrnorm")
+importFrom("robustbase","Mchi")
+importFrom("robustHD","lambda0")
+
+export(mmlasso)
+export(sridge)
