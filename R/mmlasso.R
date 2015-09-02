@@ -249,7 +249,7 @@ MMLasso<-function(xx,y,beta.ini,scale.ini,lambda,c1,niter.mm){
   
   while (tol>= 1e-4){
     beta.o<-beta.n
-    if(beta.o==0){
+    if(all(beta.o==0)){
       return(list(coef=beta.o))
     }
     MMcpp1<-MMLassoCpp1(x,y,beta.o,scale.ini,c1)
