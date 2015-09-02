@@ -11,4 +11,3 @@ Imports: Rcpp, robustHD, robustbase, parallel, doParallel, foreach,
         MASS
 LinkingTo: Rcpp, RcppArmadillo
 NeedsCompilation: yes
-Packaged: 2015-08-27 12:13:49 UTC; claudio
