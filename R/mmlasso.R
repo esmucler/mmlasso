@@ -249,6 +249,9 @@ MMLasso<-function(xx,y,beta.ini,scale.ini,lambda,c1,niter.mm){
   
   while (tol>= 1e-4){
     beta.o<-beta.n
+    if(beta.o==0){
+      return(list(coef=beta.o))
+    }
     MMcpp1<-MMLassoCpp1(x,y,beta.o,scale.ini,c1)
     xort<-MMcpp1$xort
     xjota<-MMcpp1$xjota
@@ -267,7 +270,7 @@ MMLasso<-function(xx,y,beta.ini,scale.ini,lambda,c1,niter.mm){
     m<-m+1
     if (m >= niter.mm) {tol<-0}
   }
-  list (coef=beta.n)
+  return(list(coef=beta.n))
 }
 
 
