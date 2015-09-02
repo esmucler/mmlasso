@@ -73,7 +73,7 @@ mse<-foreach(klam=1:length(lamdas),.combine=c,.packages=c('mmlasso'),.export=exp
   }
 
 if(any(is.infinite(mse))){
-  warning('RRSE failed when lambda equaled:')
+  warning('IWLS for S-Ridge failed when lambda equaled:')
   print(lamdas[which(is.infinite(mse))])
 }
 indmin<-which.min(mse)

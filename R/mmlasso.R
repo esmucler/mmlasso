@@ -80,7 +80,7 @@ mmlasso<-function(x,y,varsigma=1,cualcv.mm=5,cualcv.S=5,numlam.mm=30,numlam.S=30
     CVLasso(xnord,ynord,beta.SE,scale.SE,nfold=cualcv.mm,lambdas[klam],c1,niter.mm)
   }
   if(any(is.infinite(mse))){
-    warning('IWLasso failed when lambda equaled:')
+    warning('Iteratively weighted Lasso failed when lambda equaled:')
     print(lambdas[which(is.infinite(mse))])
   }
   indmin<-which.min(mse)
@@ -137,7 +137,7 @@ mmlasso<-function(x,y,varsigma=1,cualcv.mm=5,cualcv.S=5,numlam.mm=30,numlam.S=30
     CVLasso(xnord.w,ynord,beta.SE.w,scale.SE,nfold=cualcv.mm,lambdas.ad[klam],c1,niter.mm)
   }
   if(any(is.infinite(mse.ad))){
-    warning('IWLasso for adaptative MMLasso failed when lambda equaled:')
+    warning('Iteratively weighted Lasso for adaptative MM-Lasso failed when lambda equaled:')
     print(lambdas.ad[which(is.infinite(mse.ad))])
   }
   indmin.ad<-which.min(mse.ad)
@@ -152,7 +152,7 @@ mmlasso<-function(x,y,varsigma=1,cualcv.mm=5,cualcv.S=5,numlam.mm=30,numlam.S=30
   if(class(fit.MMLasso.ad)=='try-error'){
     beta.MMLasso.slo.ad<-beta.MMLasso.slo
     beta.MMLasso.int.ad<-beta.MMLasso.int
-    warning('Returning MMLasso as adaptive failed')
+    warning('Returning MM-Lasso as adaptive failed')
   } else{
     beta.MMLasso.slo.ad <- rep(0,p)
     beta.MMLasso.slo.ad[activ] <- fit.MMLasso.ad[2:length(fit.MMLasso.ad)]*w.ad
@@ -257,7 +257,7 @@ MMLasso<-function(xx,y,beta.ini,scale.ini,lambda,c1,niter.mm){
     u.Gram<- !(p>=500)
     try(res.Lasso <- robustHD:::fastLasso(xort, yast,lambda,intercept=FALSE, normalize=FALSE, use.Gram=u.Gram),silent=TRUE)
     if (class(res.Lasso)=="try-error"){
-      warning("fastLasso did not coverge")
+      warning("fastLasso failed")
       return(list(coef=beta.o))
     }
     beta.Lasso <- coef(res.Lasso)
