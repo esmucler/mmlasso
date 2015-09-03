@@ -190,7 +190,7 @@ CVLasso<-function(X,y,beta.ini,scale.ini,nfold,lam,c1,niter.mm){
   #niter.mm: maximum number of weighted Lasso iterations for MM-Lasso
   
   #OUTPUT
-  #mse= resulting MSE (estimated using a tau-scale)
+  #mse: resulting MSE (estimated using a tau-scale)
   
   ###Segment data
   n<-nrow(X)
