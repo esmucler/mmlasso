@@ -44,7 +44,7 @@ nlam<-min(c(p,numlam.S))
 pmax<-min(c(p, n/2))   #edf<=n/2 to keep BDP >=0.25
 pp<-seq(1,pmax,length=nlam)
 lamdas<-findlam(privar,pp) #find lambdas corresponding to the edf's
-deltas<-0.5*(1-(pp)/n)  #for the M-escale used with Penia-Yohai
+deltas<-0.5*(1-(pp)/n)  #for the M-scale used with Penia-Yohai
 
 ###Reorder data for CV
 srt<-sort.int(sample(1:n),index.return=TRUE)  #Random permutation
