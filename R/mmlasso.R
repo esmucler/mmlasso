@@ -3,15 +3,14 @@ mmlasso<-function(x,y,varsigma=1,cualcv.mm=5,cualcv.S=5,numlam.mm=30,numlam.S=30
   #The initial estimate is the RR.SE of Maronna (2011).
   #INPUT
   #X, y data set
-  #cualcv.mm: method for estimating prediction error of MM and adaptive MM-Lasso, cualcv--fold CV
-  #cualcv.S: method for estimating prediction error of S-Ridge, cualcv--fold CV
+  #cualcv.mm: method for estimating prediction error of MM and adaptive MM-Lasso, cualcv-fold CV
+  #cualcv.S: method for estimating prediction error of S-Ridge, cualcv-fold CV
   #numlam.mm: number of candidate lambda values for MM and adaptive MM-Lasso
   #numlam.S: number of candidate lambda values for S-Ridge
   #niter.mm : number of maximum iterations of weighted Lasso iterations for MM and adaptive MM-Lasso
   #niter.S : number of maximum iterations of IWLS for S-Ridge
   #ncores: number of cores to use for parallel computations
   #varsigma: power to elevate the weights for the adaptive MM-Lasso
-  
   #OUTPUT
   #coef.SE: Initial RR.SE (p+1)-vector of estimated regression parameters, beta(1)=intercept
   #coef.MMLasso: Final MMLasso (p+1)-vector of estimated regression parameters, beta(1)=intercept
@@ -20,7 +19,7 @@ mmlasso<-function(x,y,varsigma=1,cualcv.mm=5,cualcv.S=5,numlam.mm=30,numlam.S=30
   n<-nrow(x)
   p<-ncol(x)
   
-  ###Prepare data for MMLASSO and RRSE
+  ###Center and scale covariates and response using median and mad
   prep<-prepara(x,y)
   xnor<-prep$Xnor
   ynor<-prep$ynor
@@ -53,8 +52,8 @@ mmlasso<-function(x,y,varsigma=1,cualcv.mm=5,cualcv.S=5,numlam.mm=30,numlam.S=30
   ###
   
   ###Calculate candidate lambdas for MMLasso
-  lambdamax0<-lambda0(xnor,ynor)#   
-  lambdamax1<-try(optim.lam(xnor,ynor,beta.SE,scale.SE,lambdamax0,c1,niter.mm))
+  lambdamax0<-lambda0(xnor,ynor) #Initial candidate
+  lambdamax1<-try(optim.lam(xnor,ynor,beta.SE,scale.SE,lambdamax0,c1,niter.mm))#Improvement
   if(class(lambdamax1)=='try-error'){
     lambdamax1<-lambdamax0
     warning('Using approximate lambdamax for MM-Lasso')
@@ -92,7 +91,7 @@ mmlasso<-function(x,y,varsigma=1,cualcv.mm=5,cualcv.S=5,numlam.mm=30,numlam.S=30
   if(class(fit.MMLasso)=='try-error'){
     beta.MMLasso.slo<-beta.SE[2:length(beta.SE)]
     beta.MMLasso.int<-beta.SE[1]
-    warning('MM-Lasso failed, returning S-Ridge instead')
+    warning('Calculation of the final MM-Lasso estimate failed, returning S-Ridge instead')
   }else{
   beta.MMLasso<-fit.MMLasso$coef
   beta.MMLasso.slo<-beta.MMLasso[2:length(beta.MMLasso)]
@@ -120,7 +119,7 @@ mmlasso<-function(x,y,varsigma=1,cualcv.mm=5,cualcv.S=5,numlam.mm=30,numlam.S=30
   beta.SE.w <- c(beta.SE[1],beta.SE[activ+1]/w.ad)
   
   ###Calculate candidate lambdas for adaptive MMLasso   
-  lambdamax0.ad<-lambda0(xnor.w,ynor)#   
+  lambdamax0.ad<-lambda0(xnor.w,ynor)
   lambdamax1.ad<-try(optim.lam(xnor.w,ynor,beta.SE.w,scale.SE,lambdamax0.ad,c1,niter.mm))
   if (class(lambdamax1.ad)=='try-error'){
     lambdamax1.ad<-lambdamax0.ad
@@ -152,7 +151,7 @@ mmlasso<-function(x,y,varsigma=1,cualcv.mm=5,cualcv.S=5,numlam.mm=30,numlam.S=30
   if(class(fit.MMLasso.ad)=='try-error'){
     beta.MMLasso.slo.ad<-beta.MMLasso.slo
     beta.MMLasso.int.ad<-beta.MMLasso.int
-    warning('Returning MM-Lasso as adaptive failed')
+    warning('Calculation of the final adaptive MM-Lasso estimate failed, returning MM-Lasso instead')
   } else{
     beta.MMLasso.slo.ad <- rep(0,p)
     beta.MMLasso.slo.ad[activ] <- fit.MMLasso.ad[2:length(fit.MMLasso.ad)]*w.ad
@@ -181,14 +180,14 @@ mmlasso<-function(x,y,varsigma=1,cualcv.mm=5,cualcv.S=5,numlam.mm=30,numlam.S=30
 
 
 CVLasso<-function(X,y,beta.ini,scale.ini,nfold,lam,c1,niter.mm){
-  #Performs nfold-CV for MMLasso
+  #Performs nfold-CV for MM-Lasso
   #INPUT
   #X,y: data
   #beta.ini, scale.ini: initial estimate of regression and scale
   #nfold: nfold-CV
   #lam: penalization parameter
   #c1: tuning constant for the rho function
-  #niter.mm: maximum number of iterations
+  #niter.mm: maximum number of weighted Lasso iterations for MM-Lasso
   
   #OUTPUT
   #mse= resulting MSE (estimated using a tau-scale)
@@ -228,14 +227,12 @@ CVLasso<-function(X,y,beta.ini,scale.ini,nfold,lam,c1,niter.mm){
 
 MMLasso<-function(xx,y,beta.ini,scale.ini,lambda,c1,niter.mm){
   #Performs iteratively re-weighted Lasso
-  
   #INPUT
   #xx,yy: data
   #beta.ini, scale.ini: initial estimate of regression and scale
   #lambda: penalization parameter
   #c1: tuning constant for the rho function
   #niter.mm: maximum number of iterations
-  
   #OUTPUT:
   #coef: final estimate
   
@@ -276,18 +273,15 @@ MMLasso<-function(xx,y,beta.ini,scale.ini,lambda,c1,niter.mm){
 
 
 optim.lam<-function(x,y,beta.ini,scale.ini,lambdamax,c1,niter.mm){
-  #Find (approximately) smallest lambda such that the slope of the estimated MMLasso is zero
-  
+  #Finds (approximately) smallest lambda such that the slope of the MM-Lasso estimate is zero
   #INPUT
   #X, y: data set
   #beta.ini, scale.ini: initial estimates and scale
   #lambdamax: initial guess for lambda
   #c1: tuning constant for the rho function
   #niter.mm: maximum number of iterations
-  
-  
   #OUTPUT
-  #lambda: smallest lambda such that the slope of the estimated MMLasso is zero
+  #lambda: smallest lambda such that the slope of the MM-Lasso estimate is zero
   
   n<-nrow(x)
   p<-ncol(x)
@@ -327,10 +321,16 @@ optim.lam<-function(x,y,beta.ini,scale.ini,lambdamax,c1,niter.mm){
 
 
 prepara<-function(X,y){
-  # [Xnor ycen mux sigx muy sigy]=prepara(X,y, robu) 
   #Centers y and the columns of X to zero median, and normalizes X to unit mad
-  #Xnor=centered normalized X; ycen=centered y; mux=location vector of X;
-  #muy, sigy=location and scale of y
+  #INPUT
+  #X, y: data set
+  #OUTPUT
+  #Xnor: centered normalized X
+  #ycen: centered y
+  #mux: median vector of X
+  #scalex: mad vector of X
+  #muy: median of y
+  #sigy:scale of y
   muy<-median(y)
   ycen<-y-muy
   sigy<-mad(y)

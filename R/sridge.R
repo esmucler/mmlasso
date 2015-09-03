@@ -1,26 +1,23 @@
 sridge<-function(x,y,cualcv.S=5,nkeep=5,numlam.S=30,niter.S=50,normin=0,denormout=0,alone=0,ncores=Inf){                 
-
-#Solves n*s_n^2 +lam*||beta1||^2} = min
-#Required input: X, y data set
-#Optional input:
-#cualcv.S: method for estimating prediction error. cualcv--fold CV ("N_{lambda}";
+#Solves n*s_n^2 +lam*||beta1||^2} = min. Adapted from Ricardo Maronna's original MATLAB code.
+#INPUT
+#cualcv.S: method for estimating prediction error. cualcv-fold CV ("N_{lambda}";
 #nkeep: number of candidates to be kept for full iteration in the Pena-Yohai procedure (default=5)
 #normin: normalize input data?. 0=no, default ; 1=yes
 #denormout: denormalize output?. 0=no, default ; 1=yes
 #alone: are you calculating the estimator for its sake only? 0=no, default ; 1=yes
-#numlam.S: number of lambda values, default =min(n,p,20)
+#numlam.S: number of lambda values, default 30
 #niter.S : number of maximum iterations of IWLS
 #ncores : number of cores to use for parallel computations. Default is all available cores
-  
-#Output
-#beta: (p+1)-vector of regression parameters, %beta(1)=intercept
+#OUTPUT
+#beta: (p+1)-vector of regression parameters, beta(1)=intercept
 #fscale: M-estimate of scale of the final regression estimate
-#edf: final equivalent degrees of freedom ("p hat")
+#edf: final equivalent degrees of freedom
 #lamin: optimal lambda
 #delmin: optimal delta
 
 
-#Normalize and center X and y
+###Center and scale covariates and response using median and mad
 if (normin==1){
 prep<-prepara(x,y)
 Xnor<-prep$Xnor
@@ -91,9 +88,9 @@ betaslo<-beta[2:(length(beta))]
 bint<-beta[1]
 res<-ynor-Xnor%*%betaslo-as.vector(bint)
 edf<-fin$edf
-deltult<-0.5*(1-(edf+1)/n)  # "delta" for final scale
+deltult<-0.5*(1-(edf+1)/n)#"delta" for final scale
 deltult<-max(c(deltult, 0.25))
-#c0= constant. for consistency of final scale
+#c0: constant for consistency of final scale
 c0<-const_marina(deltult)
 sigma<-Mscale_mar(res,deltult,c0)   
 a_cor<-mean(psi_marina(res/sigma,c0)^2)
@@ -116,16 +113,14 @@ return(re)
 
 
 CVSE<-function(X,y,nfold,lam,gradlib,nkeep,niter.S){
-  #Performs nfold-CV for RRSE
-  
+  #Performs nfold-CV for S-Ridge
   #INPUT
-  #beta.ini, scale.ini: initial estimate of regression and scale
+  #beta.ini, scale.ini: initial estimates of regression and scale
   #X,y: data
   #lam: penalization parameter
   #gradlib: degrees of freedom, used to calculate the delta for the M-scale
   #nkeep: number of candidates for full iterations of IWLS
   #niter.S : number of maximum iterations of IWLS
-  
   #OUTPUT
   #mse: resulting MSE (estimated using a tau-scale)
   
@@ -162,7 +157,6 @@ CVSE<-function(X,y,nfold,lam,gradlib,nkeep,niter.S){
 }
 
 findlam<-function(vals,r){
-  #FINDLAM lamr= findlam(vals,r)   column vector
   #Finds lamdas which yield edf=r
   p<-length(vals)
   nr<-length(r)
@@ -182,12 +176,10 @@ sumrat<-function(lam,vals,r){
 }
 
 
-
 psi_pri_marina<-function(x,cw){
   ans<-Mchi(x,cw,'bisquare',2)
   return(ans)  
 }
-
 
 const_marina<-function(delta){
   integrand<- function(x,c){dnorm(x)*rho_marina(x,c)}
@@ -198,7 +190,5 @@ const_marina<-function(delta){
     warning("Something's wrong, could not find tuning constant for the scale")
     return(NULL)
   }
-  
-  
   return(cw)
 }

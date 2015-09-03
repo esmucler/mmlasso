@@ -271,7 +271,6 @@ List desrobrid(arma::mat x, arma::vec y,int niter,double lam,double betinte,arma
 //  cc: tuning constant for the M-scale
 //  delsca: delta for the M-scale
 //  epsilon: tolerance parameter for converge
-//  
 //  OUTPUT:
 //  beta: final estimate
 //  edf: estimated EDF
@@ -376,14 +375,14 @@ List regrid(arma::mat x,arma:: vec y,double lambda){
 // [[Rcpp::export]]
 List rr_se(arma::mat X, arma::vec y,double lambda2, double deltaesc, double cc_scale, int nkeep, int niter, double epsilon){
 //  Initial estimator: adapted Pena-Yohai (P&Y) for Ridge Regression (details in Maronna, Technometrics 2011)
-//  3*(p+1)+1 initial RR-LS estimators based on original and clean samples are computed
-//  The estimate (or nkeep estimates) that minimizes the RR-SE objective function is used as the initial estimator(s). 
+//  3*(p+1)+1 initial LS-Ridge estimators based on original and clean samples are computed
+//  The estimate (or nkeep estimates) that minimizes the S-Ridge objective function is used as the initial estimator(s). 
 //  INPUT
 //  X,y: data
-//  lambda2=l2-penalty
-//  deltaesc=delta for initial M-scale estimator
-//  nkeep=number of initial candidates selected
-//  niter:number of runs of PENSE
+//  lambda2:l2-penalty
+//  deltaesc:delta for initial M-scale estimator
+//  nkeep:number of initial candidates selected
+//  niter:number of IWLS iterations
 //  prosac: proportion of observations removed based on PSC(=deltaesc by default)
 //  nkeep: instead of using 3*(p+1)+1 initial estimators we can select the best `nkeep` candidates to perform full IWLS iterations. 
 //  epsilon: effective zero
@@ -433,17 +432,17 @@ List rr_se(arma::mat X, arma::vec y,double lambda2, double deltaesc, double cc_s
   eigvec_flip_Q = fliplr(eigvec_Q);
   Z = UV * eigvec_flip_Q;
   Z.shed_rows(n,n+p-1);
-  //each columns of Z represent the forcast change for each observation in the direction of u_j (col of U)
+  //each columns of Z represent the forecast change for each observation in the direction of u_j (col of U)
   restrun = resj.rows(0,n-1);
   betaslo = betaj.rows(1,p);
-  //Compute the M-scale for the RR-LS and value of objective function to be minimized by RR-SE 
+  //Compute the M-scale for the LS-Ridge and value of objective function to be minimized by RR-SE 
   sigj = Mscale_mar(restrun,deltaesc,cc_scale);
   critkeep[0] = n*pow(sigj,2)+lam0_2*dot(betaslo,betaslo);
   betakeep.col(0) = betaj;
 
   
   int n1 = n-m; //new sample size
-  double lam2 = lamLS_2*n1/n; //corrects lambda for RR-LS to acknowledge new sample size
+  double lam2 = lamLS_2*n1/n; //corrects lambda for LS-Ridge to acknowledge new sample size
   arma::mat Xord = mat(n,p);
   arma::mat Xj = mat(n1,p);
   arma::vec yord = vec(n);
