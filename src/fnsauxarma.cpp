@@ -263,7 +263,7 @@ List MMLassoCpp2(arma::vec xjota,arma::vec yast, arma::vec beta_lars, arma::vec 
 
 
 List desrobrid(arma::mat x, arma::vec y,int niter,double lam,double betinte,arma::vec betinslo,double cc,double delsca,double epsilon){
-//  IWLS descent for RR-SE
+//  IWLS descent for S-Ridge
 //  INPUT
 //  X, y: data
 //  lam: penalization parameter
