@@ -32,7 +32,7 @@ muy<-prep$muy
 
 #Spherical Principal Components (no centering)
 #privar, Beig= vector of robust "eigenvalues" and matrix of eigenvectors
-#Xnor is now =PCA scores= "orthonormalized Xnor "
+#Xnor is now = PCA scores
 pca<-SPCC(Xnor)
 privar<-pca$lamda
 Beig<-pca$b

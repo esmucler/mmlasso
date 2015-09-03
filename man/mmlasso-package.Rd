@@ -17,7 +17,6 @@ License: \tab GPL (>= 2)\cr
 Imports: \tab Rcpp, robustHD, robustbase, parallel, doParallel, foreach, MASS\cr
 LinkingTo: \tab Rcpp, RcppArmadillo\cr
 NeedsCompilation: \tab yes\cr
-Built: \tab R 3.1.1; x86_64-unknown-linux-gnu; 2015-08-27 11:02:07 UTC; unix\cr
 }
 
 Index:
