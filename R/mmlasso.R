@@ -1,6 +1,6 @@
 mmlasso<-function(x,y,varsigma=1,cualcv.mm=5,cualcv.S=5,numlam.mm=30,numlam.S=30,niter.S=50,niter.mm=50,ncores=Inf){                 
-  #Main function to compute MMLasso estimates.
-  #The initial estimate is the RR.SE of Maronna (2011).
+  #Main function to compute MM-Lasso estimates.
+  #The initial estimate is the S-Ridge of Maronna (2011).
   #INPUT
   #X, y data set
   #cualcv.mm: method for estimating prediction error of MM and adaptive MM-Lasso, cualcv-fold CV
