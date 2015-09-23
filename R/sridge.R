@@ -94,7 +94,7 @@ deltult<-max(c(deltult, 0.25))
 c0<-const_marina(deltult)
 sigma<-Mscale_mar(res,deltult,c0)   
 a_cor<-mean(psi_marina(res/sigma,c0)^2)
-b_cor<-mean(psi_pri_marina(res/sigma,c0))
+b_cor<-mean(Mchi(res/sigma,c0,'bisquare',2))
 c_cor<-mean(psi_marina(res/sigma,c0)*(res/sigma))
 corr<-1+(edf+1)/(2*n)*(a_cor/(b_cor*c_cor))
 fscale<-sigma*corr  #bias correction for final scale
@@ -175,11 +175,6 @@ sumrat<-function(lam,vals,r){
   return(susu)
 }
 
-
-psi_pri_marina<-function(x,cw){
-  ans<-Mchi(x,cw,'bisquare',2)
-  return(ans)  
-}
 
 const_marina<-function(delta){
   integrand<- function(x,c){dnorm(x)*rho_marina(x,c)}
