@@ -1,6 +1,6 @@
 mmlasso<-function(x,y,varsigma=1,cualcv.mm=5,cualcv.S=5,numlam.mm=30,numlam.S=30,niter.S=50,niter.mm=50,ncores=Inf){                 
   #Main function to compute MM-Lasso estimates.
-  #The initial estimate is the S-Ridge of Maronna (2011).
+  #The initial estimate is the S-Ridge of Maronna (2012).
   #INPUT
   #X, y data set
   #cualcv.mm: method for estimating prediction error of MM and adaptive MM-Lasso, cualcv-fold CV
@@ -12,9 +12,9 @@ mmlasso<-function(x,y,varsigma=1,cualcv.mm=5,cualcv.S=5,numlam.mm=30,numlam.S=30
   #ncores: number of cores to use for parallel computations
   #varsigma: power to elevate the weights for the adaptive MM-Lasso
   #OUTPUT
-  #coef.SE: Initial RR.SE (p+1)-vector of estimated regression parameters, beta(1)=intercept
-  #coef.MMLasso: Final MMLasso (p+1)-vector of estimated regression parameters, beta(1)=intercept
-  #coef.MMLasso.ad: Final adaptive MMLasso (p+1)-vector of estimated regression parameters, beta(1)=intercept
+  #coef.SE: Initial S-Ridge (p+1)-vector of estimated regression parameters, beta(1)=intercept
+  #coef.MMLasso: Final MM-Lasso (p+1)-vector of estimated regression parameters, beta(1)=intercept
+  #coef.MMLasso.ad: Final adaptive MM-Lasso (p+1)-vector of estimated regression parameters, beta(1)=intercept
 
   n<-nrow(x)
   p<-ncol(x)

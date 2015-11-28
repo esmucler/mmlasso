@@ -175,7 +175,7 @@ List my_svdecon(arma::mat x){
 List SPCC(arma::mat x){
 //  SPC Spherical Principal Components (Locantore et al., 1999)
 //  lamda= Robust "eigenvalues" (increasing); b=Matrix of eigenvectors
-//  mu=spatial mediana; scores=projection of x (centered) on eigenvectors
+//  mu=spatial median; scores=projection of x (centered) on eigenvectors
   arma::vec w = spa_med(x);
   arma::mat y = diagmat(w)*x;
   List svd_y = my_svdecon(y);

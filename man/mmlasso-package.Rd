@@ -11,8 +11,8 @@ Functions to calculate the MM-Lasso and adaptive MM-Lasso estimators proposed in
 \tabular{ll}{
 Package: \tab mmlasso\cr
 Type: \tab Package\cr
-Version: \tab 1.3.2\cr
-Date: \tab 2015-08-27\cr
+Version: \tab 1.3.3\cr
+Date: \tab 2015-11-28\cr
 License: \tab GPL (>= 2)\cr
 Imports: \tab Rcpp, robustHD, robustbase, parallel, doParallel, foreach, MASS\cr
 LinkingTo: \tab Rcpp, RcppArmadillo\cr

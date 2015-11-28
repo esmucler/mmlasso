@@ -1,7 +1,7 @@
 sridge<-function(x,y,cualcv.S=5,nkeep=5,numlam.S=30,niter.S=50,normin=0,denormout=0,alone=0,ncores=Inf){                 
 #Solves n*s_n^2 +lam*||beta1||^2} = min. Adapted from Ricardo Maronna's original MATLAB code.
 #INPUT
-#cualcv.S: method for estimating prediction error. cualcv-fold CV ("N_{lambda}";
+#cualcv.S: method for estimating prediction error. cualcv-fold cross-validation
 #nkeep: number of candidates to be kept for full iteration in the Pena-Yohai procedure (default=5)
 #normin: normalize input data?. 0=no, default ; 1=yes
 #denormout: denormalize output?. 0=no, default ; 1=yes
