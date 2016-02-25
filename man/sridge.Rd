@@ -23,11 +23,11 @@ Function to calculate the S-Ridge estimator of Maronna (2011), adapted from Maro
 }
 
 \value{
- \item{beta}{S-Ridge estimate. First coordinate is the intercept.}
- \item{fscale}{M-estimate of scale of the residuals of the final regression estimate.}
+ \item{coef}{S-Ridge estimate. First coordinate is the intercept.}
+ \item{scale}{M-estimate of scale of the residuals of the final regression estimate.}
  \item{edf}{Final equivalent degrees of freedom.}
-\item{lamin}{Optimal lambda.}
-\item{delmin}{Optimal delta.}
+\item{lamda}{Optimal lambda.}
+\item{delta}{Optimal delta.}
 }
 \author{
 Ezequiel Smucler, \email{ezequiels.90@gmail.com}.
