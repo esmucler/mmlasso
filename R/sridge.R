@@ -10,11 +10,11 @@ sridge<-function(x,y,cualcv.S=5,nkeep=5,numlam.S=30,niter.S=50,normin=0,denormou
 #niter.S : number of maximum iterations of IWLS
 #ncores : number of cores to use for parallel computations. Default is all available cores
 #OUTPUT
-#beta: (p+1)-vector of regression parameters, beta(1)=intercept
-#fscale: M-estimate of scale of the final regression estimate
+#coef: (p+1)-vector of regression parameters, beta(1)=intercept
+#scale: M-estimate of scale of the final regression estimate
 #edf: final equivalent degrees of freedom
-#lamin: optimal lambda
-#delmin: optimal delta
+#lamda: optimal lambda
+#delta: optimal delta
 
 
 ###Center and scale covariates and response using median and mad
