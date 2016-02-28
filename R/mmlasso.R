@@ -1,4 +1,4 @@
-mmlasso<-function(x,y,varsigma=1,cualcv.mm=5,cualcv.S=5,numlam.mm=30,numlam.S=30,niter.S=50,niter.mm=50,ncores=Inf){                 
+mmlasso<-function(x,y,varsigma=1,cualcv.mm=5,cualcv.S=5,numlam.mm=30,numlam.S=30,niter.S=50,niter.mm=50,ncores=1){                 
   #Main function to compute MM-Lasso estimates.
   #The initial estimate is the S-Ridge of Maronna (2012).
   #INPUT
@@ -9,7 +9,7 @@ mmlasso<-function(x,y,varsigma=1,cualcv.mm=5,cualcv.S=5,numlam.mm=30,numlam.S=30
   #numlam.S: number of candidate lambda values for S-Ridge
   #niter.mm : number of maximum iterations of weighted Lasso iterations for MM and adaptive MM-Lasso
   #niter.S : number of maximum iterations of IWLS for S-Ridge
-  #ncores: number of cores to use for parallel computations
+  #ncores: number of cores to use for parallel computations. Default is one core.
   #varsigma: power to elevate the weights for the adaptive MM-Lasso
   #OUTPUT
   #coef.SE: Initial S-Ridge (p+1)-vector of estimated regression parameters, beta(1)=intercept
@@ -35,7 +35,7 @@ mmlasso<-function(x,y,varsigma=1,cualcv.mm=5,cualcv.S=5,numlam.mm=30,numlam.S=30
   ###
   
   ###Calculate initial estimate and scale
-  fit.SE<-sridge(xnor,ynor,normin=0,denormout=0,cualcv.S,numlam.S,niter.S) #Input data is already normalized, output is in normalized data scale
+  fit.SE<-sridge(xnor,ynor,normin=0,denormout=0,cualcv.S=cualcv.S,numlam.S=numlam.S,niter.S=niter.S) #Input data is already normalized, output is in normalized data scale
   beta.SE<-fit.SE$coef
   edf.SE<-fit.SE$edf+1
   beta.SE.slo<-beta.SE[2:length(beta.SE)]
@@ -255,6 +255,9 @@ MMLasso<-function(xx,y,beta.ini,scale.ini,lambda,c1,niter.mm){
     yast<-MMcpp1$yast
     alpha<-MMcpp1$alpha
     u.Gram<- !(p>=500)
+    if(all(xjota==0)){
+      return(list(coef=beta.o))
+    }
     try(res.Lasso <- robustHD:::fastLasso(xort, yast,lambda,intercept=FALSE, normalize=FALSE, use.Gram=u.Gram),silent=TRUE)
     if (class(res.Lasso)=="try-error"){
       warning("fastLasso failed")

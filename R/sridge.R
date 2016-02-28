@@ -1,14 +1,13 @@
-sridge<-function(x,y,cualcv.S=5,nkeep=5,numlam.S=30,niter.S=50,normin=0,denormout=0,alone=0,ncores=Inf){                 
+sridge<-function(x,y,cualcv.S=5,numlam.S=30,niter.S=50,normin=0,denormout=0,alone=0,ncores=1){                 
 #Solves n*s_n^2 +lam*||beta1||^2} = min. Adapted from Ricardo Maronna's original MATLAB code.
 #INPUT
 #cualcv.S: method for estimating prediction error. cualcv-fold cross-validation
-#nkeep: number of candidates to be kept for full iteration in the Pena-Yohai procedure (default=5)
 #normin: normalize input data?. 0=no, default ; 1=yes
 #denormout: denormalize output?. 0=no, default ; 1=yes
 #alone: are you calculating the estimator for its sake only? 0=no, default ; 1=yes
 #numlam.S: number of lambda values, default 30
 #niter.S : number of maximum iterations of IWLS
-#ncores : number of cores to use for parallel computations. Default is all available cores
+#ncores : number of cores to use for parallel computations. Default is one core.
 #OUTPUT
 #coef: (p+1)-vector of regression parameters, beta(1)=intercept
 #scale: M-estimate of scale of the final regression estimate
@@ -39,6 +38,7 @@ Beig<-pca$b
 Xnor<-pca$scores
 n<-nrow(Xnor)
 p<-ncol(Xnor)
+nkeep<-5 #number of candidates to be kept for full iteration in the Pena-Yohai procedure
 privar<-privar*n #Makes the robust eigenvalues of the same order as those of classical PCA used for LS
 nlam<-min(c(p,numlam.S))
 pmax<-min(c(p, n/2))   #edf<=n/2 to keep BDP >=0.25
